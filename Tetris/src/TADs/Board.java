@@ -71,7 +71,7 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
     // details
     private int score = 0;
     private int lines = 0;
-    private int lvl = 0;
+    private int lvl = 1;
     private int seconds = 0;
 
     // currentShape
