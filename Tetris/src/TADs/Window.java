@@ -3,12 +3,13 @@ package TADs;
 import javax.swing.JFrame;
 
 public class Window{
-    //413
     public static final int WIDTH = 445, HEIGHT = 629;
 
     private Board board;
     private Title title;
     private JFrame window;
+    private BestScores bestScores;
+    private Board savedBoard;
 
     public Window(){
 

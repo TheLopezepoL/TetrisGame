@@ -14,6 +14,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
 
 //import javax.imageio.ImageIO;
 //import javax.sound.sampled.AudioSystem;
@@ -67,12 +68,13 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
     // timer for level up
     private TimerLvl timer = new TimerLvl();
 
-
     // details
+    private BestScores bestScores = new BestScores();
+    private int user = bestScores.nxtId;
     private int score = 0;
     private int lines = 0;
     private int lvl = 1;
-    private int seconds = 0;
+    private int seconds = 1;
 
     // currentShape
     private static Shape currentShape, nextShape, lastShape;
@@ -226,6 +228,10 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
             g.setColor(Color.RED);
             g.setFont(new Font("Georgia", Font.BOLD, 45));
             g.drawString(gameOverString, 50, Window.HEIGHT/2);
+            Score newScore = new Score(score, user);
+            bestScores.addScore(newScore);
+            bestScores.addConsecutivo();
+
         }
         g.setColor(Color.WHITE);
 
@@ -285,6 +291,17 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 
     }
 
+    public void saveGame(){
+        if (!buttonLapse.isRunning() && !gameOver) {
+            buttonLapse.start();
+            gamePaused = !gamePaused;
+            timer.changePause();
+        }
+        currentShape.update();
+        FileManager.writeObject(this, "savedGame.txt");
+        System.exit(0);
+    }
+
 
     public int[][] getBoard(){
         return board;
@@ -300,6 +317,8 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
             currentShape.setDeltaX(-1);
         if(e.getKeyCode() == KeyEvent.VK_DOWN)
             currentShape.speedUp();
+        if (e.getKeyCode() == KeyEvent.VK_S)
+            saveGame();
     }
     @Override
     public void keyReleased(KeyEvent e) {
@@ -335,8 +354,9 @@ public class Board extends JPanel implements KeyListener, MouseListener, MouseMo
 
         score = 0;
         lines = 0;
-        seconds = 0;
-        lvl = 0;
+        seconds = 1;
+        lvl = 1;
+        user = bestScores.nxtId;
 
         for(int row = 0; row < board.length; row++)
         {
